@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration status="warn" name="TestApp">
+    <Appenders>
+        <RollingFile name="RollingFile" filename="logs/app.log"
+                     filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+            <Patternlayout>
+                <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+            </Patternlayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="250MB"/>
+            </Policies>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Root level="trace">
+                <AppenderRef ref="RollingFile"/>
+        </Root>
+    </Loggers>
+</configuration>
