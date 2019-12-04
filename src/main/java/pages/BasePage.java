@@ -3,6 +3,7 @@ package pages;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import utils.DriverUtils;
 
 import java.io.FileInputStream;
@@ -13,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 public abstract class BasePage
 {
     static final Logger log = LogManager.getLogger(BasePage.class);
-    public WebDriver driver;
+    public RemoteWebDriver driver;
     private Properties prop = getProperties();
     private String currentPath = System.getProperty("user.dir");
 
@@ -23,14 +24,19 @@ public abstract class BasePage
         log.info("Base Url is set "+baseUrl);
         String browser = prop.getProperty("defaultBrowser");
         log.info("Browser value is  "+browser);
-        try
-        {
-            driver = DriverUtils.getDriver(driver,browser,baseUrl);
-            log.info("Driver is instantiated and base URL is loaded");
+
+        String hub = (String) prop.getOrDefault("hub", "");
+        if(hub.isEmpty()) {
+            try {
+                driver = DriverUtils.getDriver(driver, browser, baseUrl);
+                log.info("Driver is instantiated and base URL is loaded");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-        catch (Exception e)
-        {
-            e.printStackTrace();
+        else{
+            driver = DriverUtils.getDriver(driver,hub,browser,baseUrl);
+            log.info("RemoteWebDriver is instantiated and base URL is loaded");
         }
 
     }

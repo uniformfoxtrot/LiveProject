@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -20,7 +21,7 @@ public class DriverUtils
     static final Logger log = LogManager.getLogger(DriverUtils.class);
     private static Properties prop;
 
-    public static WebDriver getDriver(WebDriver driver, String browser, String baseURL) throws Exception
+    public static RemoteWebDriver getDriver(WebDriver driver, String browser, String baseURL) throws Exception
     {
         prop = new Properties();
         prop.load(new FileInputStream(DRIVER_PROP_FILE));
@@ -58,7 +59,22 @@ public class DriverUtils
         driver.manage().window().fullscreen();
         //long implicitWait = Long.parseLong(prop.getProperty("implicitWaitTimeout"));
         driver.manage().timeouts().implicitlyWait(5,TimeUnit.SECONDS);
-        return driver;
+        return (RemoteWebDriver) driver;
+    }
+
+    public static RemoteWebDriver getDriver(RemoteWebDriver driver,String hub,String browser,String baseUrl)
+    {
+
+        try
+        {
+            driver = DriverFactory.getInstance().getDriver(browser,hub);
+            driver.get(baseUrl);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        return  driver;
     }
 
     private static boolean isWindows()
